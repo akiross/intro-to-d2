@@ -25,7 +25,8 @@ e andare con un browser su [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
 ## Licenze
 
-Tutto il contenuto di questa repo è sotto licenza CC BY-SA, per il materiale
+Tutto il contenuto di questa repo è sotto licenza
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#), per il materiale
 che mi appartiene (incluso il logo "shameless plug" di cui vado molto orgoglioso);
 elenco qui sotto il materiale che non mi appartiene.
 
@@ -33,6 +34,8 @@ elenco qui sotto il materiale che non mi appartiene.
   [repository detectron2](https://github.com/facebookresearch/detectron2).
 - Le immagini delle icone delle categorie COCO e le immagini di esempio sono
   prese da [cocodataset.org](https://cocodataset.org/).
+- Le icone usate in giro sono prese da [openemoji](https://openmoji.org/).
+- L'immagine del LiDAR l'ho rubata su internet, ma non so attribuirne l'origine.
 - L'immagine dell'orso nel video arriva da
   [flickr](https://www.flickr.com/photos/tambako/25269050550).
   Purtroppo ho sbagliato e ho creato del materiale derivato anche se la
