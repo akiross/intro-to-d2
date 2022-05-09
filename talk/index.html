@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Intro a Detectron2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Alessandro 'AkiRoss' Re" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css"
+      integrity="sha512-Mjxkx+r7O/OLQeKeIBCQ2yspG1P5muhAtv/J+p2/aPnSenciZWm5Wlnt+NOUNA4SHbnBIE/R2ic0ZBiCXdQNUg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css"
+      integrity="sha512-ITH3NSfntO7uI5n+BnxGNXpzDUoOsmAXuG37UDONLxNYIdc0EBBOOQ1xyc+t9ag9ETSuBXFApx+Rod0uURfDYw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/league.min.css"
+      integrity="sha512-L+ka4IUY+zr00lAS8B8RFscr4Tsh7AWYnlzr+QX5z5thxi0VPPKiqN6xnT6mMY+BGeFGHzUHxCfSklNhezZ6Pg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/monokai.min.css"
+      integrity="sha512-z8wQkuDRFwCBfoj7KOiu1MECaRVoXx6rZQWL21x0BsVVH7JkqCp1Otf39qve6CrCycOOL5o9vgfII5Smds23rg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      s {
+        opacity: 0.5;
+      }
+      .gallery {
+        height: 500px;
+      }
+      .gallery-side {
+        display: inline-block;
+        height: 100%;
+        width: 15%;
+      }
+      .gallery-view {
+        display: inline-block;
+        width: 80%;
+      }
+      .overlay-plug-1 {
+        width: 300px;
+        position: absolute;
+        right: 200px;
+      }
+      .red-text {
+        color: red;
+      }
+      .img-scroll-cropper {
+        overflow: auto;
+        height: 500px;
+        padding: 0px;
+      }
+      .img-scroll-cropper > img {
+        /* undo reveal-js settings */
+        max-width: 100%;
+        max-height: none;
+        display: block;
+        margin: 0px;
+      }
+      .img-strip {
+        width: 100%;
+      }
+      .img-strip img {
+        display: inline-block;
+        width: 30%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>Introduzione a Detectron2</h1>
+          <h2>Alessandro Re</h2>
+          <h4>htttttps://///github.com/akiross/intro-to-d2</h4>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>Momento Ego</h2>
+          </section>
+
+          <section data-auto-animate>
+            <h2>Momento Ego</h2>
+            <ul>
+              <li>
+                &#x1F9D2; &#x1f5a5;&#xfe0f; Nerd fin da tenera età (i286 +
+                QBASIC)
+              </li>
+              <li class="fragment">&#x1F40D; PyCon Italia &gt;= 3</li>
+              <li class="fragment">
+                &#x1F9D1;&#x200D;&#x1F393; MSc @
+                <a href="https://www.unimib.it/">unimib.it</a> -
+                &#x1F9D1;&#x200D;&#x1F3EB; PhD @
+                <a href="https://www.unl.pt/en/">unl.pt</a>
+              </li>
+              <li class="fragment">
+                &#129489;&#8205;&#128187; ex Sr. ML Eng @
+                <a href="https://standard.ai/">standard.ai</a>
+                &#129408; &#x1F40D;
+              </li>
+              <li class="fragment">
+                &#x1F977; CTO @ D/Vision Lab -
+                <a href="https://www.dvisionlab.com/">dvisionlab.com</a>
+              </li>
+              <li class="fragment">
+                &#x1F389; Intervista Pythonista #8 &#x1F389; &#x1F680;
+              </li>
+            </ul>
+            <img
+              src="images/shameless_plug.svg"
+              class="fragment overlay-plug-1"
+            />
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Disclaimer</h2>
+          </section>
+          <section>
+            <h2>Disclaimer</h2>
+            <ul>
+              <li>Non sono un espertone di Detectron2 o CV.</li>
+              <li class="fragment">Conosco pochi modelli, ma male.</li>
+              <li class="fragment">
+                Questo è ciò che ho imparato in ~4 mesi di uso RnD, nulla è
+                ancora andato in produzione.
+              </li>
+            </ul>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>Detectron 2</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Detectron 2</h2>
+            <ul>
+              <li>Libreria (e tools) per Computer Vision &#128065;&#65039;</li>
+              <li class="fragment">by Facebook AI Research (FAIR)</li>
+              <li class="fragment">Basato su PyTorch e torchvision</li>
+              <li class="fragment">
+                Licensed Apache-2.0/CC BY-SA 3.0 &#9878;&#65039;
+              </li>
+              <li class="fragment">In buono stato di manutenzione &#128077;</li>
+              <li class="fragment">Comunità Ok (meglio di altre) &#9989;</li>
+            </ul>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>Computer Vision</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Computer Vision</h2>
+            <p>
+              Automatizzare compiti (tasks) che tipicamente vengono risolti
+              dall'apparato visivo.
+            </p>
+            <p>
+              D2 fornisce una libreria per affrontare alcuni <b>task</b> di CV:
+              codice python e insieme di <b>modelli già addestrati</b>.
+            </p>
+          </section>
+
+          <section data-auto-animate>
+            <h2>Computer Vision</h2>
+            <div class="gallery">
+              <div class="gallery-side">
+                <img src="images/cv2.png" />
+                <img src="images/cv3.png" />
+                <img src="images/cv4.png" />
+                <img src="images/cv5.png" />
+              </div>
+              <img src="images/cv1.png" class="gallery-view" />
+            </div>
+            <p>Object Detection</p>
+          </section>
+
+          <section data-auto-animate>
+            <h2>Computer Vision</h2>
+            <div class="gallery">
+              <div class="gallery-side">
+                <img src="images/cv1.png" />
+                <img src="images/cv3.png" />
+                <img src="images/cv4.png" />
+                <img src="images/cv5.png" />
+              </div>
+              <img src="images/cv2.png" class="gallery-view" />
+            </div>
+            <p>Instance Segmentation</p>
+          </section>
+
+          <section data-auto-animate>
+            <h2>Computer Vision</h2>
+            <div class="gallery">
+              <div class="gallery-side">
+                <img src="images/cv1.png" />
+                <img src="images/cv2.png" />
+                <img src="images/cv4.png" />
+                <img src="images/cv5.png" />
+              </div>
+              <img src="images/cv3.png" class="gallery-view" />
+            </div>
+            <p>Keypoint Detection</p>
+          </section>
+
+          <section data-auto-animate>
+            <h2>Computer Vision</h2>
+            <div class="gallery">
+              <div class="gallery-side">
+                <img src="images/cv1.png" />
+                <img src="images/cv2.png" />
+                <img src="images/cv3.png" />
+                <img src="images/cv5.png" />
+              </div>
+              <img src="images/cv4.png" class="gallery-view" />
+            </div>
+            <p>Panoptic Segmentation</p>
+          </section>
+
+          <section data-auto-animate>
+            <h2>Computer Vision</h2>
+
+            <div class="gallery">
+              <div class="gallery-side">
+                <img src="images/cv1.png" />
+                <img src="images/cv2.png" />
+                <img src="images/cv3.png" />
+                <img src="images/cv4.png" />
+              </div>
+              <img src="images/cv5.png" class="gallery-view" />
+            </div>
+            <p>DensePose (RnD: CWL ma poco coeso)</p>
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>Modelli Addestrati??</h2>
+            <h2>
+              &#128021; &#10145;&#65039; &#128021;&#8205;&#129466; ? &#129300;
+            </h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Machine Learning</h2>
+            <p class="fragment">
+              Risolvere un problema (difficile da codificare) partendo dai dati
+            </p>
+            <div class="fragment">
+              <p>
+                E.g. come scrivereste un codice (senza ML) per fare detection
+                di...
+              </p>
+              <ul>
+                <li>un QR code?</li>
+                <li class="fragment">una Ferrari F-40?</li>
+                <li class="fragment">un frutto?</li>
+              </ul>
+            </div>
+          </section>
+          <section data-auto-animate>
+            <h2>Machine Learning</h2>
+            <img src="images/ml_con_emoji.svg" />
+            <!--p>
+              Problema → Raccolta Dati → Addestramento Modello → Produzione
+              Artefatto → Inferenza
+            </p-->
+          </section>
+          <section data-auto-animate>
+            <h2>Machine Learning</h2>
+            <img src="images/ml_con_emoji_pretrain.svg" />
+            <!--p>
+              Problema → Raccolta Dati →
+              <s>Addestramento Modello → Produzione Artefatto</s> → Inferenza
+            </p-->
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>D2 How To</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>D2 How To</h2>
+            <p>
+              Consideriamo una foto di esempio, tipo questa di me al lago
+              nell'estate 2021.
+            </p>
+            <img src="images/lago.jpg" class="fragment" />
+          </section>
+          <section data-auto-animate>
+            <h2>D2 How To</h2>
+            <pre
+              data-id="some-code"
+            ><code class="hljs" data-trim data-noescape data-line-numbers>
+# creo una directory e ci vado dentro
+mkdir workspace &amp;&amp; cd workspace 
+
+# scarico una foto di esempio
+curl -o input.jpg https://live.staticflickr.com/1490/25269050550_5bf6d511f4_b.jpg
+
+# scarico anche detectron2 che contiene lo script di demo e le configurazioni
+git clone https://github.com/facebookresearch/detectron2
+
+# installo detectron2 per pytorch 1.10 su CPU
+pip install detectron2 -f \
+  https://dl.fbaipublicfiles.com/detectron2/wheels/cpu/torch1.10/index.html
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>D2 How To - object detection</h2>
+            <pre data-id="some-code"><code class="hljs" data-trim>
+# Usiamo la demo fornita
+cd detectron2/demo
+python3 demo.py \
+    --config-file ../configs/COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml \
+    --input ../../input.jpg \
+    --opts MODEL.DEVICE cpu \
+           MODEL.WEIGHTS \
+             detectron2://COCO-Detection/faster_rcnn_R_50_FPN_3x/137849458/model_final_280758.pkl
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>Output - object detection</h2>
+            <img src="images/lago_detection.png" />
+          </section>
+          <section data-auto-animate>
+            <h2>D2 How To - instance segmentation</h2>
+            <pre data-id="some-code"><code class="hljs" data-trim>
+# Usiamo la demo fornita
+cd detectron2/demo
+python3 demo.py \
+    --config-file ../configs/<b>COCO-InstanceSegmentation/mask</b>_rcnn_R_50_FPN_3x.yaml \
+    --input ../../input.jpg \
+    --opts MODEL.DEVICE cpu \
+           MODEL.WEIGHTS \
+             detectron2://<b>COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl</b>
+            </code></pre>
+          </section>
+          <section data-auto-animate>
+            <h2>Output: instance segmentation</h2>
+            <img src="images/lago_mask.png" />
+          </section>
+          <section>
+            <h2>D2 How To - Model Zoo</h2>
+            <div class="img-scroll-cropper">
+              <img src="images/model_zoo.png" />
+            </div>
+            <a
+              href="https://github.com/facebookresearch/detectron2/blob/main/MODEL_ZOO.md"
+              >Link MODEL_ZOO.md</a
+            >
+          </section>
+        </section>
+        <section>
+          <section data-auto-animate>
+            <h2>Esploriamo demo.py</h2>
+          </section>
+          <section data-auto-animate>
+            <h2>Esploriamo demo.py</h2>
+            <p>
+              Il codice di demo ci permette di farci un'idea di come viene usato
+              D2 e di quali sono le componenti principali, quindi vale la pena
+              studiarlo un po'.
+            </p>
+          </section>
+          <section data-auto-animate>
+            <h2>Esploriamo demo.py</h2>
+            <ul style="font-size: 75%">
+              <li>
+                <a
+                  href="https://github.com/facebookresearch/detectron2/blob/main/demo/demo.py"
+                  >demo.py</a
+                >
+                <ul>
+                  <li>
+                    <b>setup_cfg()</b><br />fa il setup della configurazione
+                    usata dal d2
+                  </li>
+                  <li>
+                    <b>get_parser()</b><br />è un semplice
+                    argparse.ArgumentParser per la CLI
+                  </li>
+                  <li>
+                    <b>test_opencv_video_format()</b><br />
+                    usata per determinare il vcodec da usare
+                  </li>
+                  <li>
+                    <b>main</b><br />
+                    in cui si processano gli args e si lancia il codice
+                    richiesto
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/facebookresearch/detectron2/blob/main/demo/predictor.py"
+                  >predictor.py</a
+                >
+                <ul>
+                  <li>
+                    <b>VisualizationDemo</b><br />
+                    processa gli input e lancia le predizioni sui frame
+                  </li>
+                  <li>
+                    <b>AsyncPredictor</b><br />usato per lanciare le predizioni
+                    in modo async/parallelo
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </section>
+          <section data-auto-animate>
+            <h2>Esploriamo demo.py</h2>
+            <p>Cose importanti da ricordare</p>
+            <ul>
+              <li>
+                Configurazioni flessibili basate su YAML<br />(e/o file python).
+              </li>
+              <li><b>DefaultPredictor</b> per inferenza del modello.</li>
+              <li><b>Visualizer</b> per vedere i risultati.</li>
+              <li>Soglie di confidenza (SCORE_THRESH_TEST).</li>
+            </ul>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>COCO pretrain</h2>
+          </section>
+          <section>
+            <h2>COCO pretrain</h2>
+            <p>
+              Training con
+              <a href="https://cocodataset.org/">COCO</a> (o ImageNet).
+            </p>
+            <img src="images/coco_classes.png" height="100px" />
+            <div class="img-strip">
+              <img
+                src="https://farm8.staticflickr.com/7188/6997628995_705c21c9b3_z.jpg"
+              />
+              <img
+                src="https://farm4.staticflickr.com/3681/9454106748_372aaa989a_z.jpg"
+              />
+              <img
+                src="https://farm8.staticflickr.com/7442/9170275390_ee63b4cf1d_z.jpg"
+              />
+            </div>
+          </section>
+          <section>
+            <h2>COCO pretrain</h2>
+            <p>
+              Non ci aspettiamo che un modello sappia riconoscere immagini
+              drasticamente diverse.
+            </p>
+            <img src="images/lidar.jpg" style="height: 250px" />
+            <p>
+              È possibile fare training con nuovi dati, devono essere in una
+              certa struttura, stesso numero di classi, fondamentalmente lo
+              stesso dataset.
+            </p>
+          </section>
+          <section>
+            <h2>COCO pretrain</h2>
+            <p>Com'è fatto il dataset?</p>
+            <pre><code data-trim>
+coco/
+  annotations/
+    panoptic_{train,val}2017.json
+  panoptic_{train,val}2017/  # png annotations
+  panoptic_stuff_{train,val}2017/  # generated by the script mentioned below
+            </code></pre>
+            <a href="https://cocodataset.org/#format-data">Specifica JSON</a>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Custom training</h2>
+          </section>
+          <section>
+            <h2>Custom training</h2>
+            <p>
+              C'é la possibilità di usare dataset custom e fare training (anche
+              multi-GPU*) in modo relativamente semplice.
+            </p>
+          </section>
+          <section>
+            <h2>Custom training</h2>
+            <p>In breve</p>
+            <ul>
+              <li>
+                Strutturare i dati in un
+                <a
+                  href="https://detectron2.readthedocs.io/en/latest/tutorials/datasets.html#standard-dataset-dicts"
+                  >formato noto</a
+                >
+              </li>
+              <li>DatasetCatalog.register("ds_val", dati)</li>
+              <li>MetadataCatalog.get("ds_val").set(thing_classes=cat)</li>
+              <li>Opt: subclass COCOEvaluator e DefaultTrainer</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2>Custom training</h2>
+            <p>I miei take away</p>
+            <ul>
+              <li>Mettete i vostri dati in formato COCO.</li>
+              <li>
+                Usate strumenti tipo
+                <a href="https://voxel51.com/fiftyone/">fiftyone</a> per
+                conversione e verifica.
+              </li>
+              <li>Modelli "grossi": potreste aver bisogno di "tanti" dati.</li>
+            </ul>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Messa in Produzione</h2>
+          </section>
+          <section>
+            <h2>Messa in Produzione</h2>
+            <h1>&#x1F937;</h1>
+            <p>basata su pytorch... quindi torch serve?</p>
+            <p>
+              <a href="https://github.com/facebookresearch/d2go">d2go</a>: tool
+              basato su d2 che però usa tecniche e modelli per aumentare la
+              velocità (a scapito di un po' di qualità).
+            </p>
+          </section>
+        </section>
+        <section>
+          <h1>FINE!</h1>
+          <h1>Q &amp; A</h1>
+        </section>
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"
+      integrity="sha512-fEgazVdZLNymIm9n+b2jtCrM4DQiqNTfLNUxbsGSFUJpYemf9A8GxgJ3VAfU/Lc6yZkDdEOdekBDZtG/mf73fQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+      Reveal.initialize({
+        width: 960,
+        height: 700,
+      });
+    </script>
+  </body>
+</html>
