@@ -18,7 +18,7 @@ Le slides sono fatte con revealjs e qualche immagine. Ho usato una CDN, quindi
 per vederle basta fare:
 
 ```
-cd slides
+cd talk
 python3 -m http.server
 ```
 
